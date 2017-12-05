@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Aprendendo IndexedDB</title>
+</head>
+<body>
+    <div align="center">
+        <form>
+            <textarea rows="20" cols="175" id="info"></textarea>
+            <br/>
+            <button onClick="adiciona(event)">Adiciona Negociação</button>
+            <button onClick="listaTodos(event)">Listar Negociações</button>
+            <button onClick="limpar(event)">Limpar</button>
+        </form>
+    </div>
+    <script src="js/app/models/Negociacao.js"></script>
+    <script>
+        var openRequest = window.indexedDB.open( /*NomeDoBanco*/ 'aluraFrame' , /*VersãoDoBanco*/ 3 );
+        var connection;
+        var info = document.querySelector('#info');
+
+        openRequest.onupgradeneeded = e => {
+            escreve( 'Cria ou altera um banco já existente.' );
+
+            let minhaConnection = e.target.result;
+
+            if( minhaConnection.objectStoreNames.contains( 'negociacoes' ) ) {
+                minhaConnection.deleteObjectStore( 'negociacoes' );
+            }
+
+            minhaConnection.createObjectStore( 'negociacoes' , { autoIncrement: true } );
+        };
+
+        openRequest.onsuccess = e => {
+            escreve( 'Conexão obtida com sucesso.' );
+            connection = e.target.result;
+        };
+
+        openRequest.onerror = e => {
+            escreve( e.target.error );
+        };
+
+        //adiciona();
+
+        function adiciona( event ) {
+            event.preventDefault();
+
+            if( connection ) {
+                let transaction = connection.transaction(['negociacoes'], 'readwrite');
+                let store = transaction.objectStore('negociacoes');
+
+                let negociacao = new Negociacao( new Date, 1, 200);
+
+                let request = store.add(negociacao);
+
+                request.onsuccess = e => {
+                    escreve('Negociação incluída com sucesso.');
+                };
+
+                request.onerror = e => {
+                    escreve('Não foi possível incluir a negociação');
+                }
+            }
+        }
+
+        function listaTodos( event ) {
+            event.preventDefault();
+
+            if( connection ) {
+                let transaction = connection.transaction(['negociacoes'], 'readwrite');
+                let store = transaction.objectStore('negociacoes');
+
+                let cursor = store.openCursor();
+
+                let negociacoes = [];
+
+                cursor.onsuccess = e => {
+                    let atual = e.target.result;
+
+                    if(atual) {
+                        var dado = atual.value;
+
+                        negociacoes.push( new Negociacao( dado._data, dado._quantidade, dado._valor) );
+                        atual.continue();
+                    }
+                    else {
+                        escreve( '\n' + 'Negociações atuais:' + '\n' + ',' + negociacoes.map(obj => 'Quantidade:' + obj.quantidade + ', Valor:' + obj.valor + ', Data:' + obj.data + '\n' ) );
+                    }
+                };
+
+                cursor.onerror = e => {
+                    escreve( e.target.error.name );
+                };
+            }
+        }
+
+        function limpar( event ) {
+            event.preventDefault();
+            info.value = '';
+        }
+
+        function escreve( texto ) {
+            if( info.value && info.value.length > 0 ) {
+                texto = info.value + '\n' + texto;
+            }
+            info.value = texto;
+        }
+    </script>
+</body>
+</html>
