@@ -1,69 +1,86 @@
-class HttpService {
+'use strict';
 
-    _handleErrors(res) {
-        if (!res.ok) throw new Error(res.statusText);
-        return res;
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var HttpService = function () {
+    function HttpService() {
+        _classCallCheck(this, HttpService);
     }
 
-    get(url) {
-        
-        /*return new Promise((resolve, reject) => {
-            let xhr = new XMLHttpRequest();
-            
-            xhr.open('GET', url);
-            
-            xhr.onreadystatechange = () => {
-                    
-                if(xhr.readyState == 4) {
-                    
-                    if(xhr.status == 200) {   
-                        
-                        resolve(JSON.parse(xhr.responseText));  
-                    } else {
-                        
-                        reject(xhr.responseText);
-                    }
-                }
-            };
-            
-            xhr.send();
-        });*/
+    _createClass(HttpService, [{
+        key: '_handleErrors',
+        value: function _handleErrors(res) {
+            if (!res.ok) throw new Error(res.statusText);
+            return res;
+        }
+    }, {
+        key: 'get',
+        value: function get(url) {
+            var _this = this;
 
-        return fetch(url)
-            .then(res => this._handleErrors(res))
-            .then(res => res.json());
-            //.catch(erro => erro);
-    }
-
-    post(url, dado) {
-        
             /*return new Promise((resolve, reject) => {
-        
                 let xhr = new XMLHttpRequest();
+                
+                xhr.open('GET', url);
+                
+                xhr.onreadystatechange = () => {
+                        
+                    if(xhr.readyState == 4) {
+                        
+                        if(xhr.status == 200) {   
+                            
+                            resolve(JSON.parse(xhr.responseText));  
+                        } else {
+                            
+                            reject(xhr.responseText);
+                        }
+                    }
+                };
+                
+                xhr.send();
+            });*/
+
+            return fetch(url).then(function (res) {
+                return _this._handleErrors(res);
+            }).then(function (res) {
+                return res.json();
+            });
+            //.catch(erro => erro);
+        }
+    }, {
+        key: 'post',
+        value: function post(url, dado) {
+            var _this2 = this;
+
+            /*return new Promise((resolve, reject) => {
+                         let xhr = new XMLHttpRequest();
                 xhr.open("POST", url, true);
                 xhr.setRequestHeader("Content-type", "application/json");
                 xhr.onreadystatechange = () => {
-        
-                    if (xhr.readyState == 4) {
-        
-                        if (xhr.status == 200) {
-        
-                            resolve(JSON.parse(xhr.responseText));
+                             if (xhr.readyState == 4) {
+                                 if (xhr.status == 200) {
+                                     resolve(JSON.parse(xhr.responseText));
                         } else {
-        
-                            reject(xhr.responseText);
+                                     reject(xhr.responseText);
                         }
                     }
                 };
                 xhr.send(JSON.stringfy(dado));
             });*/
 
-        return fetch(url,{
-            headers: {'Content-type': 'application/json'},
-            method: 'post',
-            body: JSON.stringify(dado)
-        })
-        .then(res => this._handleErrors(res));
-        //.catch(erro => erro );
-    }
-}
+            return fetch(url, {
+                headers: { 'Content-type': 'application/json' },
+                method: 'post',
+                body: JSON.stringify(dado)
+            }).then(function (res) {
+                return _this2._handleErrors(res);
+            });
+            //.catch(erro => erro );
+        }
+    }]);
+
+    return HttpService;
+}();
+//# sourceMappingURL=HttpService.js.map
