@@ -1,12 +1,12 @@
-var ConnectionFactory = (function /*tmp*/() {
+//var ConnectionFactory = (function /*tmp*/() {
     const stores  = ['negociacoes'];
     const version = 5;
     const dbName  = 'aluraframe'
 
-    var connection = null;
-    var close      = null;
+    let connection = null;
+    let close      = null;
 
-    return class ConnectionFactory {
+    export /*return*/ class ConnectionFactory {
         constructor() {
             throw new Error('Não é possível criar instâncias de ConnectionFactory');
         }
@@ -57,6 +57,6 @@ var ConnectionFactory = (function /*tmp*/() {
             }
         }
     }
-})(); //Função anônima com auto-invocação
+//})(); //Função anônima com auto-invocação
 
 //var ConnectionFactory = tmp();
